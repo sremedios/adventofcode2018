@@ -29,29 +29,6 @@ fn main() -> Result<(), io::Error> {
     let mut frequencies = HashSet::new();
     let mut frequency: i32 = 0;
 
-    /*
-    let drifts: Vec<i32> = reader
-        .by_ref()
-        .lines()
-        .map(|l| {
-            l?.parse::<i32>().map_err(|err| {
-                io::Error::new(ErrorKind::Other, format!("An error occurred: {}", err))
-            })
-        }).flatten()
-        .collect();
-
-    let mut cycle = drifts.iter().cycle();
-
-    let answer = loop {
-        frequency += cycle.next().unwrap();
-
-        if frequencies.contains(&frequency) {
-            break frequency;
-        } else {
-            frequencies.insert(frequency);
-        }
-    };
-    */
     let answer = loop {
         frequency += match reader.by_ref().lines().next().map(|x| {
             x?.parse::<i32>().map_err(|err| {
@@ -61,15 +38,14 @@ fn main() -> Result<(), io::Error> {
             Some(n) => n?,
             None => {
                 reader.seek(SeekFrom::Start(0))?;
-                reader
-                    .by_ref()
-                    .lines()
-                    .next()
-                    .map(|x| {
-                        x?.parse::<i32>().map_err(|err| {
-                            io::Error::new(ErrorKind::Other, format!("An error occurred: {}", err))
-                        })
-                    }).unwrap().unwrap()
+                match reader.by_ref().lines().next().map(|x| {
+                    x?.parse::<i32>().map_err(|err| {
+                        io::Error::new(ErrorKind::Other, format!("An error occurred: {}", err))
+                    })
+                }) {
+                    Some(n) => n?,
+                    None => 0i32,
+                }
             }
         };
 
