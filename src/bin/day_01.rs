@@ -29,6 +29,7 @@ fn main() -> Result<(), io::Error> {
     let mut frequencies = HashSet::new();
     let mut frequency: i32 = 0;
 
+    /*
     let drifts: Vec<i32> = reader
         .by_ref()
         .lines()
@@ -50,6 +51,35 @@ fn main() -> Result<(), io::Error> {
             frequencies.insert(frequency);
         }
     };
+    */
+    let answer = loop {
+        frequency += match reader.by_ref().lines().next().map(|x| {
+            x?.parse::<i32>().map_err(|err| {
+                io::Error::new(ErrorKind::Other, format!("An error occurred: {}", err))
+            })
+        }) {
+            Some(n) => n?,
+            None => {
+                reader.seek(SeekFrom::Start(0))?;
+                reader
+                    .by_ref()
+                    .lines()
+                    .next()
+                    .map(|x| {
+                        x?.parse::<i32>().map_err(|err| {
+                            io::Error::new(ErrorKind::Other, format!("An error occurred: {}", err))
+                        })
+                    }).unwrap().unwrap()
+            }
+        };
+
+        if frequencies.contains(&frequency) {
+            break frequency;
+        } else {
+            frequencies.insert(frequency);
+        }
+    };
+
     println!("Part two solution: {}", answer);
 
     Ok(())
