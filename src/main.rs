@@ -10,7 +10,7 @@ fn main() -> Result<(), io::Error> {
     let day = if args[1].chars().count() == 1 {
         format!("0{}", args[1])
     } else {
-        args[1].to_string() 
+        args[1].to_string()
     };
     let input_filename: PathBuf = [
         "resources",
@@ -19,9 +19,10 @@ fn main() -> Result<(), io::Error> {
         .iter()
         .collect();
 
-    let input_filename = input_filename.to_str().unwrap();
-
-    println!("{}", input_filename);
+    let input_filename = match input_filename.to_str() {
+        Some(f) => f,
+        None => "error_parsing_filename",
+    };
 
     let (part_1_answer, part_2_answer) = match day.as_ref() {
         "01" => (
@@ -36,7 +37,7 @@ fn main() -> Result<(), io::Error> {
     };
 
     println!(
-        "Day {:?}\nPart 1: {:?}\nPart 2: {:?}",
+        "===== Day {} =====\nPart 1: {}\nPart 2: {}",
         args[1], part_1_answer, part_2_answer
     );
 
