@@ -4,6 +4,7 @@ use std::path::PathBuf;
 
 mod day_01;
 mod day_02;
+mod day_03;
 
 fn main() -> Result<(), io::Error> {
     let args: Vec<String> = env::args().collect();
@@ -32,6 +33,10 @@ fn main() -> Result<(), io::Error> {
         "02" => (
             day_02::part_1(input_filename)?,
             day_02::part_2(input_filename)?,
+        ),
+        "03" => (
+            day_03::part_1(input_filename)?,
+            day_03::part_2(input_filename)?,
         ),
         _ => ("Invalid argument".to_owned(), "Invalid argument".to_owned()),
     };
