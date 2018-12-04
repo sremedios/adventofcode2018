@@ -1,6 +1,5 @@
-use std::collections::HashSet;
 use std::fs::File;
-use std::io::{self, BufRead, BufReader, ErrorKind, Read, Seek, SeekFrom};
+use std::io::{self, BufRead, BufReader, Read};
 
 #[derive(Clone, Debug)]
 struct Fabric {
@@ -13,7 +12,6 @@ struct Fabric {
 
 pub fn part_1(filename: &str) -> Result<String, io::Error> {
     let f = File::open(filename)?;
-    let exclude_symbols = vec!['#', '@', ',', 'x', ':'];
     let fabrics = BufReader::new(&f)
         .by_ref()
         .lines()
@@ -47,9 +45,9 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
             }
         }
     }
-    let mut sum: u32 = grid
+    let sum: u32 = grid
         .iter()
-        .flat_map(|v| v.iter().filter(|x| *x >= &2).map(|x| 1))
+        .flat_map(|v| v.iter().filter(|x| **x >= 2).map(|_x| 1))
         .sum();
 
     let answer = format!("{}", sum);
@@ -58,7 +56,6 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
 
 pub fn part_2(filename: &str) -> Result<String, io::Error> {
     let f = File::open(filename)?;
-    let exclude_symbols = vec!['#', '@', ',', 'x', ':'];
     let fabrics = BufReader::new(&f)
         .by_ref()
         .lines()
@@ -88,7 +85,6 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
     let mut all_ids: Vec<u32> = fabrics.iter().map(|f| f.id).collect();
     let mut wrong_ids: Vec<u32> = Vec::new();
 
-    let mut answer = 0u32;
     for fabric in fabrics.clone() {
         for w in 0..fabric.width {
             for h in 0..fabric.height {
@@ -108,7 +104,7 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
     }
 
     all_ids.retain(|id| !wrong_ids.contains(id));
-    answer = all_ids[0];
+    let answer = all_ids[0];
 
     Ok(answer.to_string())
 }
