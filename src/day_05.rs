@@ -44,8 +44,18 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
     for problem_letter in String::from("abcdefghijklmnopqrstuvwxyz").chars() {
         let mut copied_line = line.clone();
         copied_line.retain(|c| {
-            c != problem_letter.to_lowercase().to_string().chars().next().unwrap()
-                && c != problem_letter.to_uppercase().to_string().chars().next().unwrap()
+            c != problem_letter
+                .to_lowercase()
+                .to_string()
+                .chars()
+                .next()
+                .unwrap()
+                && c != problem_letter
+                    .to_uppercase()
+                    .to_string()
+                    .chars()
+                    .next()
+                    .unwrap()
         });
 
         let cur_len = loop {
