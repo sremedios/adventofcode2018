@@ -109,13 +109,11 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
 
     events.sort_unstable_by(|left, right| left.cmp(right));
 
-
     for (i, event) in events.iter().enumerate() {
         println!("{:?}", event);
         if i > 20 {
             break;
         }
-
     }
 
     let mut last_id = events[0].id;
@@ -126,7 +124,6 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
             last_id = event.id;
         }
     }
-
 
     let mut event_map: HashMap<i32, (i32, [i32; 60])> = HashMap::new();
     let mut cur_id = -1;
@@ -151,7 +148,7 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
                     .and_modify(|(time_asleep, midnight_minutes)| {
                         //*time_asleep += event.minute - asleep_minute;
                         if asleep_hour != 0 && event.hour == 0 {
-                            *time_asleep = (60i32 + event.hour - asleep_hour) % 60; 
+                            *time_asleep = (60i32 + event.hour - asleep_hour) % 60;
                         } else {
                             *time_asleep = event.minute - asleep_minute;
                         }
@@ -165,9 +162,9 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
                         }
                     }).or_insert_with(|| {
                         let mut midnight_minutes = [0; 60];
-                        let mut time_asleep;
+                        let time_asleep;
                         if asleep_hour != 0 && event.hour == 0 {
-                            time_asleep = (60i32 + event.hour - asleep_hour) % 60; 
+                            time_asleep = (60i32 + event.hour - asleep_hour) % 60;
                         } else {
                             time_asleep = event.minute - asleep_minute;
                         }
@@ -225,5 +222,10 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
     );
 
     let answer = longest_sleeper_id * most_freq_minute_asleep;
+    Ok(answer.to_string())
+}
+
+pub fn part_2(_filename: &str) -> Result<String, io::Error> {
+    let answer = "not yet implemented";
     Ok(answer.to_string())
 }
