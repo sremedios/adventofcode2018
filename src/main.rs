@@ -39,11 +39,14 @@ fn main() -> Result<(), io::Error> {
             day_03::part_1(input_filename)?,
             day_03::part_2(input_filename)?,
         ),
-        "04" => (
-            day_04::part_1(input_filename)?,
-            //day_04::part_2(input_filename)?,
-            "not yet implemented".to_owned(),
-        ),
+        "04" => {
+            (
+                //day_04::part_1("resources\\day_04_test_input.txt")?,
+                day_04::part_1(input_filename)?,
+                //day_04::part_2(input_filename)?,
+                "not yet implemented".to_owned(),
+            )
+        }
         _ => ("Invalid argument".to_owned(), "Invalid argument".to_owned()),
     };
 

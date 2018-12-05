@@ -109,58 +109,121 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
 
     events.sort_unstable_by(|left, right| left.cmp(right));
 
+
+    for (i, event) in events.iter().enumerate() {
+        println!("{:?}", event);
+        if i > 20 {
+            break;
+        }
+
+    }
+
     let mut last_id = events[0].id;
-    for event in events.iter_mut().skip(1){
+    for event in events.iter_mut().skip(1) {
         if event.id == -1i32 {
             event.id = last_id;
         } else {
             last_id = event.id;
         }
-    };
+    }
 
-    // aggregate all sleeps as ID: boolean vector of minutes
-    // can use .and_modify(||) .or_insert_with(||)
-    let mut event_map = HashMap::new();
+
+    let mut event_map: HashMap<i32, (i32, [i32; 60])> = HashMap::new();
+    let mut cur_id = -1;
+    let mut asleep_minute = 0;
+    let mut asleep_hour = 0;
+    let mut longest_sleeper_id = -1;
+    let mut longest_sleep = 0;
+    let mut total_time_asleep = 0;
+
     for event in events {
-        let mut vec_entry = event_map.entry(event.id).or_insert(Vec::new());
-        vec_entry.push(event.clone());
-    }
-    
-    // find difference between waking and sleeping
-    let mut sleep_amount = HashMap::new();
-    let mut diff = 0;
-    let mut start_time = 0;
-    let mut end_time = 0;
-
-    for (event_id, event) in event_map.iter() {
-        if event.state == State::FallsAsleep {
-            start_time = event.minute;
-        } else if event.state == State::WakesUp {
-            end_time = event.minute; 
+        match event.state {
+            State::BeginsShift => {
+                cur_id = event.id;
+            }
+            State::FallsAsleep => {
+                asleep_minute = event.minute;
+                asleep_hour = event.hour;
+            }
+            State::WakesUp => {
+                event_map
+                    .entry(cur_id)
+                    .and_modify(|(time_asleep, midnight_minutes)| {
+                        //*time_asleep += event.minute - asleep_minute;
+                        if asleep_hour != 0 && event.hour == 0 {
+                            *time_asleep = (60i32 + event.hour - asleep_hour) % 60; 
+                        } else {
+                            *time_asleep = event.minute - asleep_minute;
+                        }
+                        total_time_asleep = *time_asleep;
+                        for i in asleep_minute..event.minute {
+                            midnight_minutes[i as usize] += 1;
+                        }
+                        if cur_id == 3491 {
+                            println!("{:?}", event);
+                            println!("{:?}", midnight_minutes.to_vec());
+                        }
+                    }).or_insert_with(|| {
+                        let mut midnight_minutes = [0; 60];
+                        let mut time_asleep;
+                        if asleep_hour != 0 && event.hour == 0 {
+                            time_asleep = (60i32 + event.hour - asleep_hour) % 60; 
+                        } else {
+                            time_asleep = event.minute - asleep_minute;
+                        }
+                        total_time_asleep = time_asleep;
+                        for i in asleep_minute..event.minute {
+                            midnight_minutes[i as usize] += 1;
+                        }
+                        (time_asleep, midnight_minutes)
+                    });
+                if total_time_asleep > longest_sleep {
+                    //println!("{:?}", event);
+                    longest_sleep = total_time_asleep;
+                    longest_sleeper_id = event.id;
+                }
+            }
+            State::Undetermined => {}
         }
-
-        sleep
-        
     }
 
-
-    println!("{:?}", event_map.get(&1093));
-
-    // find longest sleep
-    let mut longest_sleep = 0i32;
-    let mut last_minute = 0i32;
-    let mut id = 0i32;
-    for (event_id, event) in event_map.iter_mut() {
-       if event.len() > longest_sleep as usize {
-            longest_sleep = event.len() as i32;
-            let final_event = event.pop().unwrap();
-            last_minute = final_event.minute;
-            id = final_event.id;
-       }
+    // argmax
+    let mut most_freq_minute_asleep: i32 = 0;
+    let mut max = 0;
+    for (i, minute) in event_map
+        .get(&longest_sleeper_id)
+        .unwrap()
+        .1
+        .iter()
+        .enumerate()
+        .skip(1)
+    {
+        if max < *minute {
+            most_freq_minute_asleep = i as i32;
+            max = *minute;
+        }
     }
 
-    println!("ID {:?}\nLast minute {:?}", id, last_minute);
+    event_map
+        .get(&longest_sleeper_id)
+        .unwrap()
+        .1
+        .iter()
+        .max()
+        .unwrap();
 
-    let answer = last_minute * id;
+    /*
+    println!(
+        "{:?}",
+        event_map.get(&longest_sleeper_id).unwrap().1.to_vec()
+    );
+    */
+
+    println!(
+        "ID: {:?}\nLast sleeping minute: {:?}",
+        longest_sleeper_id, most_freq_minute_asleep
+    );
+
+    let answer = longest_sleeper_id * most_freq_minute_asleep;
     Ok(answer.to_string())
 }
