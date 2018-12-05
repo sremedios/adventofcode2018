@@ -36,7 +36,34 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
 }
 
 pub fn part_2(filename: &str) -> Result<String, io::Error> {
-    let answer = "not yet implemented";
+    let f = File::open(filename)?;
+    let mut line = BufReader::new(&f).lines().next().unwrap().unwrap();
+
+    let mut answer = 100000000;
+
+    for problem_letter in String::from("abcdefghijklmnopqrstuvwxyz").chars() {
+        let mut copied_line = line.clone();
+        copied_line.retain(|c| {
+            c != problem_letter.to_lowercase().to_string().chars().next().unwrap()
+                && c != problem_letter.to_uppercase().to_string().chars().next().unwrap()
+        });
+
+        let cur_len = loop {
+            let tmp = check_reaction(copied_line.clone()).unwrap();
+
+            if copied_line.len() != tmp.len() {
+                copied_line = check_reaction(copied_line.clone()).unwrap();
+            } else {
+                break copied_line.len();
+            }
+        };
+
+        if cur_len < answer {
+            answer = cur_len;
+        }
+
+        //println!("{}", answer.len());
+    }
 
     Ok(answer.to_string())
 }
