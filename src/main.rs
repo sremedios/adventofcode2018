@@ -21,8 +21,8 @@ fn main() -> Result<(), io::Error> {
         "resources",
         format!("{}{}{}", "day_", day, "_input.txt").as_ref(),
     ]
-        .iter()
-        .collect();
+    .iter()
+    .collect();
 
     let input_filename = match input_filename.to_str() {
         Some(f) => f,

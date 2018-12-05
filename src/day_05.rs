@@ -1,78 +1,50 @@
-use std::fs::File;
-use std::io::{self, BufRead, BufReader, Read};
+use std::fs;
+use std::io;
 
-fn check_reaction(input: String) -> Result<String, io::Error> {
-    let mut output = input.clone();
+fn solve_react(input: &str) -> Result<String, io::Error> {
+    // stack implementation
+    let mut output: Vec<char> = Vec::with_capacity(input.chars().count());
 
-    for (i, (a, b)) in input.chars().zip(input.chars().skip(1)).enumerate() {
-        if a.to_lowercase().to_string() == b.to_lowercase().to_string()
-            && ((a.is_lowercase() && b.is_uppercase()) || (a.is_uppercase() && b.is_lowercase()))
+    for c in input.chars() {
+        if output.is_empty() {
+            output.push(c);
+        } else if output.last().unwrap().to_lowercase().to_string() == c.to_lowercase().to_string()
+            && ((output.last().unwrap().is_lowercase() && c.is_uppercase())
+                || (output.last().unwrap().is_uppercase() && c.is_lowercase()))
         {
-            output.replace_range(i..i + 2, "++");
-            break;
+            output.pop();
+        } else {
+            output.push(c);
         }
     }
-    output.retain(|c| c != '+');
-    Ok(output)
+
+    Ok(output.iter().collect::<String>())
 }
 
 pub fn part_1(filename: &str) -> Result<String, io::Error> {
-    let f = File::open(filename)?;
-    let mut line = BufReader::new(&f).lines().next().unwrap().unwrap();
+    let line = fs::read_to_string(filename)?.trim().to_string();
 
-    let answer = loop {
-        let tmp = check_reaction(line.clone()).unwrap();
+    let answer = solve_react(&line)?.len();
 
-        if line.len() != tmp.len() {
-            line = check_reaction(line.clone()).unwrap();
-        } else {
-            break line;
-        }
-    };
-
-    println!("{}", answer.len());
-
-    Ok(answer.len().to_string())
+    Ok(answer.to_string())
 }
 
 pub fn part_2(filename: &str) -> Result<String, io::Error> {
-    let f = File::open(filename)?;
-    let mut line = BufReader::new(&f).lines().next().unwrap().unwrap();
+    let line = fs::read_to_string(filename)?.trim().to_string();
 
-    let mut answer = 100000000;
+    let mut answer = 100_000_000;
+    let alphabet_lower = String::from("abcdefghijklmnopqrstuvwxyz");
+    let alphabet_upper = String::from("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-    for problem_letter in String::from("abcdefghijklmnopqrstuvwxyz").chars() {
+    for (omit_lower, omit_upper) in alphabet_lower.chars().zip(alphabet_upper.chars()) {
         let mut copied_line = line.clone();
-        copied_line.retain(|c| {
-            c != problem_letter
-                .to_lowercase()
-                .to_string()
-                .chars()
-                .next()
-                .unwrap()
-                && c != problem_letter
-                    .to_uppercase()
-                    .to_string()
-                    .chars()
-                    .next()
-                    .unwrap()
-        });
+        copied_line.retain(|c| c != omit_lower && c != omit_upper);
 
-        let cur_len = loop {
-            let tmp = check_reaction(copied_line.clone()).unwrap();
-
-            if copied_line.len() != tmp.len() {
-                copied_line = check_reaction(copied_line.clone()).unwrap();
-            } else {
-                break copied_line.len();
-            }
-        };
+        let cur_len = solve_react(&copied_line)?.len();
 
         if cur_len < answer {
             answer = cur_len;
         }
-
-        //println!("{}", answer.len());
     }
 
     Ok(answer.to_string())

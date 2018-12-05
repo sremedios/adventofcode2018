@@ -11,7 +11,8 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
             l?.parse::<i32>().map_err(|err| {
                 io::Error::new(ErrorKind::Other, format!("An error occurred: {}", err))
             })
-        }).flatten()
+        })
+        .flatten()
         .sum::<i32>();
     Ok(answer.to_string())
 }
