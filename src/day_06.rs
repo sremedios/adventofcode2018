@@ -60,8 +60,6 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
                 continue;
             }
 
-            // if any duplicates occur, skip this iteration
-
             for coord in coords.clone() {
                 let cur_dist = manhattan_dist(i, j, coord.0, coord.1);
                 if cur_dist < closest_dist {
@@ -93,7 +91,61 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
 }
 
 pub fn part_2(filename: &str) -> Result<String, io::Error> {
-    let answer = "unimplemented";
+    let f = File::open(filename)?;
+    let coords: Vec<(u32, u32)> = BufReader::new(&f)
+        .lines()
+        .map(|line| {
+            let line = line
+                .unwrap()
+                .split(", ")
+                .map(|x| x.to_owned())
+                .collect::<Vec<String>>();
+            (
+                line[0].parse::<u32>().unwrap(),
+                line[1].parse::<u32>().unwrap(),
+            )
+        }).collect();
+
+    // get maximum grid size
+    let mut max = 0;
+    for coord in coords.clone() {
+        if max < coord.0 {
+            max = coord.0;
+        }
+        if max < coord.1 {
+            max = coord.1;
+        }
+    }
+    max += 10; // for safety for now
+
+    let mut coord_map: HashMap<(u32, u32), i32> = HashMap::new();
+    let mut closest_dist = 100_000;
+    let mut closest_coord = (0u32, 0u32);
+
+    let mut area = 0; // this is the answer
+    let dist_max = 10_000;
+
+    // find to which point each grid location is closest
+    for i in 0..max {
+        for j in 0..max {
+            closest_dist = 100_000;
+            closest_coord = (0u32, 0u32);
+
+            let mut cur_total_dist = 0;
+
+            // calculate all distances to remove duplicates
+            let mut dists: Vec<i32> = Vec::new();
+            for coord in coords.clone() {
+                cur_total_dist += manhattan_dist(i, j, coord.0, coord.1);
+            }
+
+            if cur_total_dist < dist_max {
+                area += 1;
+            }
+        }
+    }
+
+    let answer = area;
 
     Ok(answer.to_string())
 }
