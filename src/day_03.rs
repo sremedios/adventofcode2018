@@ -34,8 +34,7 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
                 height: line[4].parse::<u32>().unwrap(),
                 id: line[0].parse::<u32>().unwrap(),
             }
-        })
-        .collect::<Vec<Fabric>>();
+        }).collect::<Vec<Fabric>>();
 
     let mut grid: Vec<Vec<u32>> = vec![vec![0; 2000]; 2000];
 
@@ -79,8 +78,7 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
                 height: line[4].parse::<u32>().unwrap(),
                 id: line[0].parse::<u32>().unwrap(),
             }
-        })
-        .collect::<Vec<Fabric>>();
+        }).collect::<Vec<Fabric>>();
 
     let mut grid: Vec<Vec<u32>> = vec![vec![0; 2000]; 2000];
 

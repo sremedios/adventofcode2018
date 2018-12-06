@@ -52,8 +52,7 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
                             1
                         }
                     },
-                )
-                .sum();
+                ).sum();
             if num_mismatched == 1u8 {
                 answer = word_1
                     .chars()
