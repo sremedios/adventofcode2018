@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::{self, BufRead, BufReader, Read};
+use std::io::{self, BufRead, BufReader};
 
 fn manhattan_dist(x1: u32, y1: u32, x2: u32, y2: u32) -> i32 {
     (x1 as i32 - x2 as i32).abs() + (y1 as i32 - y2 as i32).abs() as i32
@@ -35,8 +35,8 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
     max += 10; // for safety for now
 
     let mut coord_map: HashMap<(u32, u32), i32> = HashMap::new();
-    let mut closest_dist = 100_000;
-    let mut closest_coord = (0u32, 0u32);
+    let mut closest_dist;
+    let mut closest_coord;
 
     // find to which point each grid location is closest
     for i in 0..max {
@@ -118,23 +118,14 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
     }
     max += 10; // for safety for now
 
-    let mut coord_map: HashMap<(u32, u32), i32> = HashMap::new();
-    let mut closest_dist = 100_000;
-    let mut closest_coord = (0u32, 0u32);
-
     let mut area = 0; // this is the answer
     let dist_max = 10_000;
 
     // find to which point each grid location is closest
     for i in 0..max {
         for j in 0..max {
-            closest_dist = 100_000;
-            closest_coord = (0u32, 0u32);
-
             let mut cur_total_dist = 0;
 
-            // calculate all distances to remove duplicates
-            let mut dists: Vec<i32> = Vec::new();
             for coord in coords.clone() {
                 cur_total_dist += manhattan_dist(i, j, coord.0, coord.1);
             }
