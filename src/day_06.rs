@@ -20,7 +20,8 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
                 line[0].parse::<u32>().unwrap(),
                 line[1].parse::<u32>().unwrap(),
             )
-        }).collect();
+        })
+        .collect();
 
     // get maximum grid size
     let mut max = 0;
@@ -104,7 +105,8 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
                 line[0].parse::<u32>().unwrap(),
                 line[1].parse::<u32>().unwrap(),
             )
-        }).collect();
+        })
+        .collect();
 
     // get maximum grid size
     let mut max = 0;

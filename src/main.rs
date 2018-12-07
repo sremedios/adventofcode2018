@@ -10,6 +10,7 @@ mod day_03;
 mod day_04;
 mod day_05;
 mod day_06;
+mod day_07;
 
 fn main() -> Result<(), io::Error> {
     let args: Vec<String> = env::args().collect();
@@ -22,8 +23,8 @@ fn main() -> Result<(), io::Error> {
         "resources",
         format!("{}{}{}", "day_", day, "_input.txt").as_ref(),
     ]
-        .iter()
-        .collect();
+    .iter()
+    .collect();
 
     let input_filename = match input_filename.to_str() {
         Some(f) => f,
@@ -55,6 +56,10 @@ fn main() -> Result<(), io::Error> {
         "06" => (
             day_06::part_1(input_filename)?,
             day_06::part_2(input_filename)?,
+        ),
+        "07" => (
+            day_07::part_1(input_filename)?,
+            day_07::part_2(input_filename)?,
         ),
         _ => ("Invalid argument".to_owned(), "Invalid argument".to_owned()),
     };

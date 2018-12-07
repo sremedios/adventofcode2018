@@ -57,7 +57,8 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
                 .collect::<Vec<String>>();
             line.retain(|entry| entry != "");
             Event { time, id, state }
-        }).collect::<Vec<Event>>();
+        })
+        .collect::<Vec<Event>>();
 
     events.sort_unstable_by(|left, right| left.time.cmp(&right.time));
 
@@ -86,7 +87,8 @@ pub fn part_1(filename: &str) -> Result<String, io::Error> {
                         for i in sleep_start.minute()..event.time.minute() {
                             midnight_minutes[i as usize] += 1;
                         }
-                    }).or_insert_with(|| {
+                    })
+                    .or_insert_with(|| {
                         let mut midnight_minutes = [0; 60];
                         let time_asleep = (event.time - sleep_start).num_minutes() as i32;
                         total_time_asleep = time_asleep;
@@ -159,7 +161,8 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
                 .collect::<Vec<String>>();
             line.retain(|entry| entry != "");
             Event { time, id, state }
-        }).collect::<Vec<Event>>();
+        })
+        .collect::<Vec<Event>>();
 
     events.sort_unstable_by(|left, right| left.time.cmp(&right.time));
 
@@ -184,7 +187,8 @@ pub fn part_2(filename: &str) -> Result<String, io::Error> {
                         for i in sleep_start.minute()..event.time.minute() {
                             midnight_minutes[i as usize] += 1;
                         }
-                    }).or_insert_with(|| {
+                    })
+                    .or_insert_with(|| {
                         let mut midnight_minutes = [0; 60];
                         let time_asleep = (event.time - sleep_start).num_minutes() as i32;
                         for i in sleep_start.minute()..event.time.minute() {
